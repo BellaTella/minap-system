@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}MiNaP — PTSD Indicator System{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section style="background: linear-gradient(135deg, #1a6b4a 0%, #134d36 100%); color: #fff; padding: 5rem 1.5rem; text-align: center;">
+  <div style="max-width: 700px; margin: 0 auto;">
+    <div style="display:inline-block; background:rgba(255,255,255,.15); border-radius:50px; padding:.4rem 1.2rem; font-size:.85rem; margin-bottom:1.5rem; letter-spacing:.05em;">
+      🏫 The Michuki National Polytechnic
+    </div>
+    <h1 style="font-size:2.6rem; font-weight:700; line-height:1.2; margin-bottom:1rem;">
+      Your Mental Wellbeing<br/>Matters Here
+    </h1>
+    <p style="font-size:1.1rem; opacity:.9; max-width:560px; margin:0 auto 2rem;">
+      A confidential, anonymous screening tool to help identify and support
+      trainees experiencing PTSD symptoms. Takes less than 10 minutes.
+    </p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;" id="home-actions">
+      <a href="/screening/" class="btn btn-accent btn-lg">
+        ✦ Start Screening
+      </a>
+      <a href="/trainee/login/" class="btn btn-primary btn-lg" id="home-trainee-login">
+        🎓 Trainee Login
+      </a>
+      <a href="/trainee/dashboard/" class="btn btn-primary btn-lg" id="home-trainee-dashboard" style="display:none;">
+        📊 My Dashboard
+      </a>
+      <a href="/counsellor/dashboard/" class="btn btn-primary btn-lg" id="home-counsellor-dashboard" style="display:none;">
+        🏥 Counsellor Dashboard
+      </a>
+    </div>
+    <p style="margin-top:1.5rem; font-size:.82rem; opacity:.7;">
+      🔒 Completely anonymous &nbsp;·&nbsp; No login required &nbsp;·&nbsp; Results are confidential
+    </p>
+    <div style="margin-top:1rem; font-size:.85rem; opacity:.8;" id="home-links">
+      <a href="/trainee/register/" style="color:#fff; text-decoration:underline;" id="home-register-link">New Trainee? Register here</a> 
+      <span id="home-links-separator">&nbsp;·&nbsp;</span>
+      <a href="/counsellor/login/" style="color:#fff; text-decoration:underline;" id="home-counsellor-link">Counsellor Portal</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats bar -->
+<section style="background:#fff; border-bottom:1px solid #e5e7eb; padding:1.5rem;">
+  <div style="max-width:900px; margin:0 auto; display:flex; justify-content:center; gap:3rem; flex-wrap:wrap; text-align:center;">
+    <div>
+      <div style="font-size:1.8rem; font-weight:700; color:#1a6b4a;">~10 min</div>
+      <div style="font-size:.85rem; color:#6b7280;">To complete</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem; font-weight:700; color:#1a6b4a;">100%</div>
+      <div style="font-size:.85rem; color:#6b7280;">Anonymous</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem; font-weight:700; color:#1a6b4a;">5</div>
+      <div style="font-size:.85rem; color:#6b7280;">Severity levels assessed</div>
+    </div>
+    <div>
+      <div style="font-size:1.8rem; font-weight:700; color:#1a6b4a;">AI</div>
+      <div style="font-size:.85rem; color:#6b7280;">Powered analysis</div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section id="how-it-works" style="padding:4rem 1.5rem;">
+  <div style="max-width:900px; margin:0 auto;">
+    <h2 style="text-align:center; font-size:1.8rem; font-weight:700; margin-bottom:.5rem;">How It Works</h2>
+    <p style="text-align:center; color:#6b7280; margin-bottom:3rem;">Three simple steps to get personalised support</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem;">
+      <div class="card" style="text-align:center; padding:2rem 1.5rem;">
+        <div style="width:56px;height:56px;background:#e8f5ee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;">📋</div>
+        <h3 style="font-weight:600; margin-bottom:.5rem;">1. Answer Questions</h3>
+        <p style="color:#6b7280; font-size:.9rem;">Complete the validated PCL-5 questionnaire — 20 questions about how you've been feeling over the past month.</p>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem 1.5rem;">
+        <div style="width:56px;height:56px;background:#e8f5ee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;">🤖</div>
+        <h3 style="font-weight:600; margin-bottom:.5rem;">2. AI Analysis</h3>
+        <p style="color:#6b7280; font-size:.9rem;">Our AI model analyses your responses and classifies your symptom severity level instantly.</p>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem 1.5rem;">
+        <div style="width:56px;height:56px;background:#e8f5ee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;">💚</div>
+        <h3 style="font-weight:600; margin-bottom:.5rem;">3. Get Support</h3>
+        <p style="color:#6b7280; font-size:.9rem;">Receive personalised feedback, coping resources, and — if needed — a referral to MiNaP counselling services.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Privacy notice -->
+<section style="padding:0 1.5rem 4rem;">
+  <div style="max-width:900px; margin:0 auto;">
+    <div class="card" style="background:linear-gradient(135deg,#e8f5ee,#f0faf4); border-color:#b7dfc8;">
+      <div style="display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap;">
+        <div style="font-size:2rem;">🔐</div>
+        <div>
+          <h3 style="font-weight:600; color:#1a6b4a; margin-bottom:.5rem;">Your Privacy is Protected</h3>
+          <p style="color:#2d6a4f; font-size:.9rem; line-height:1.7;">
+            This screening is completely <strong>anonymous</strong>. No names, student IDs, or personal identifiers are collected.
+            Your responses are encrypted and stored securely in compliance with Kenya's Data Protection Act (2019).
+            Only aggregated, anonymised data is visible to counsellors — your individual responses are never linked to your identity.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#1a6b4a; padding:3rem 1.5rem; text-align:center; color:#fff;">
+  <h2 style="font-size:1.8rem; font-weight:700; margin-bottom:.75rem;">Ready to check in with yourself?</h2>
+  <p style="opacity:.85; margin-bottom:1.5rem;">It's free, anonymous, and takes less than 10 minutes.</p>
+  <a href="/screening/" class="btn btn-accent btn-lg">Start the Screening →</a>
+</section>
+
+<script>
+// Update home page based on login status
+(function() {
+  const token = localStorage.getItem('auth_token') || localStorage.getItem('minap_token');
+  const user = JSON.parse(localStorage.getItem('user') || localStorage.getItem('minap_user') || '{}');
+  
+  const traineeLoginBtn = document.getElementById('home-trainee-login');
+  const traineeDashboardBtn = document.getElementById('home-trainee-dashboard');
+  const counsellorDashboardBtn = document.getElementById('home-counsellor-dashboard');
+  const registerLink = document.getElementById('home-register-link');
+  const counsellorLink = document.getElementById('home-counsellor-link');
+  const linksSeparator = document.getElementById('home-links-separator');
+  
+  if (token && user.role) {
+    // User is logged in
+    if (user.role === 'student') {
+      // Show student dashboard, hide login and counsellor links
+      if (traineeLoginBtn) traineeLoginBtn.style.display = 'none';
+      if (traineeDashboardBtn) traineeDashboardBtn.style.display = 'inline-flex';
+      if (counsellorDashboardBtn) counsellorDashboardBtn.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+      if (counsellorLink) counsellorLink.style.display = 'none';
+      if (linksSeparator) linksSeparator.style.display = 'none';
+    } else if (user.role === 'counsellor' || user.role === 'admin') {
+      // Show counsellor dashboard, hide other links
+      if (traineeLoginBtn) traineeLoginBtn.style.display = 'none';
+      if (traineeDashboardBtn) traineeDashboardBtn.style.display = 'none';
+      if (counsellorDashboardBtn) counsellorDashboardBtn.style.display = 'inline-flex';
+      if (registerLink) registerLink.style.display = 'none';
+      if (counsellorLink) counsellorLink.style.display = 'none';
+      if (linksSeparator) linksSeparator.style.display = 'none';
+    }
+  } else {
+    // User is not logged in - show login options
+    if (traineeLoginBtn) traineeLoginBtn.style.display = 'inline-flex';
+    if (traineeDashboardBtn) traineeDashboardBtn.style.display = 'none';
+    if (counsellorDashboardBtn) counsellorDashboardBtn.style.display = 'none';
+    if (registerLink) registerLink.style.display = 'inline';
+    if (counsellorLink) counsellorLink.style.display = 'inline';
+    if (linksSeparator) linksSeparator.style.display = 'inline';
+  }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Counsellor Login — MiNaP{% endblock %}
+
+{% block nav_links %}
+<a href="/screening/">Trainee Screening</a>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:440px; padding-top:4rem;">
+  <div class="text-center mb-2">
+    <div style="width:64px;height:64px;background:var(--primary);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;">🏥</div>
+    <h1 style="font-size:1.6rem; font-weight:700;">Counsellor Portal</h1>
+    <p class="text-muted mt-1">Sign in to access the MiNaP dashboard</p>
+  </div>
+
+  <div class="card mt-3">
+    <div id="login-error" class="alert alert-danger" style="display:none;">
+      <span>⚠️</span><div id="login-error-msg">Invalid credentials.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-control" id="username" placeholder="Enter your username" autocomplete="username" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Enter your password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') doLogin()" />
+    </div>
+    <button class="btn btn-primary btn-lg w-100 mt-2" id="login-btn" onclick="doLogin()">
+      Sign In →
+    </button>
+  </div>
+
+  <p class="text-center text-muted mt-3" style="font-size:.85rem;">
+    This portal is for authorised MiNaP counselling staff only.<br/>
+    Contact your administrator if you need access.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const errBox = document.getElementById('login-error');
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!username || !password) {
+    document.getElementById('login-error-msg').textContent = 'Please enter your username and password.';
+    errBox.style.display = 'flex'; return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Signing in…';
+
+  try {
+    const res = await fetch('/api/auth/login/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    
+    if (res.ok) {
+      // Check if user is counsellor or admin
+      if (data.user.role !== 'counsellor' && data.user.role !== 'admin') {
+        document.getElementById('login-error-msg').textContent = 
+          'This portal is for counsellors only. Please use the appropriate login page.';
+        errBox.style.display = 'flex';
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In →';
+        return;
+      }
+      
+      // Store token and user data
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('minap_token', data.token); // Keep for compatibility
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('minap_user', JSON.stringify(data.user)); // Keep for compatibility
+      
+      // Redirect to dashboard
+      window.location.href = '/counsellor/dashboard/';
+    } else {
+      document.getElementById('login-error-msg').textContent =
+        data.non_field_errors?.[0] || data.detail || 'Invalid credentials.';
+      errBox.style.display = 'flex';
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In →';
+    }
+  } catch (e) {
+    console.error('Login error:', e);
+    document.getElementById('login-error-msg').textContent = 'Network error. Please try again.';
+    errBox.style.display = 'flex';
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In →';
+  }
+}
+
+function getCookie(name) {
+  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
+}
+
+// Redirect if already logged in as counsellor
+const token = localStorage.getItem('auth_token') || localStorage.getItem('minap_token');
+const user = JSON.parse(localStorage.getItem('user') || localStorage.getItem('minap_user') || '{}');
+if (token && (user.role === 'counsellor' || user.role === 'admin')) {
+  window.location.href = '/counsellor/dashboard/';
+}
+</script>
+{% endblock %}
