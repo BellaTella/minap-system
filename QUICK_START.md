@@ -376,7 +376,7 @@ Before deploying to production:
 
 ## Support & Documentation
 
-- **Full Documentation**: See `IMPLEMENTATION_NOTES.md`
+- **Full Documentation**: See `README.md` and `SYSTEM_WORKFLOWS.md`
 - **Project Proposal**: See `PROJECT-PROPOSAL-STELLA-MWAURA.docx`
 - **Django Docs**: https://docs.djangoproject.com/
 - **DRF Docs**: https://www.django-rest-framework.org/

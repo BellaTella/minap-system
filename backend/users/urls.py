@@ -20,6 +20,10 @@ urlpatterns = [
     # ─── Appointments ─────────────────────────────────────────────────────────────
     path('student/appointments/', views.appointment_list, name='appointment-list'),
     path('student/appointments/<int:pk>/', views.appointment_detail, name='appointment-detail'),
+
+    # ─── Counsellor: Appointment Management ───────────────────────────────────────
+    path('counsellor/appointments/', views.counsellor_appointment_list, name='counsellor-appointments'),
+    path('counsellor/appointments/<int:pk>/', views.counsellor_appointment_update, name='counsellor-appointment-update'),
     
     # ─── Admin: User Management ───────────────────────────────────────────────────
     path('admin/dashboard/', views.admin_dashboard, name='admin-dashboard'),

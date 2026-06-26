@@ -128,10 +128,10 @@ minap-system/
 ├── .gitignore
 ├── README.md
 │
-├── ✨ IMPLEMENTATION_NOTES.md            # ✨ NEW - Technical documentation
-├── ✨ QUICK_START.md                     # ✨ NEW - Testing guide
-├── ✨ CHANGES_SUMMARY.md                 # ✨ NEW - Changes overview
-├── ✨ PROJECT_STRUCTURE.md               # ✨ NEW - This file
+├── QUICK_START.md                        # Setup & testing guide
+├── PROJECT_STRUCTURE.md                  # This file
+├── SYSTEM_WORKFLOWS.md                   # End-to-end workflows
+├── TESTING_CHECKLIST.md                  # Manual test checklist
 └── PROJECT-PROPOSAL-STELLA-MWAURA.docx   # Original requirements
 ```
 

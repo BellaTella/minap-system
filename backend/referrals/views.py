@@ -16,12 +16,13 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import Referral
 from .serializers import ReferralSerializer, ReferralUpdateSerializer
+from users.permissions import IsCounsellorOrAdmin
 
 logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def list_referrals(request):
     """
     GET /api/referrals/
@@ -54,7 +55,7 @@ def list_referrals(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def referral_detail(request, pk):
     """GET /api/referrals/<pk>/"""
     try:
@@ -69,7 +70,7 @@ def referral_detail(request, pk):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def update_referral(request, pk):
     """
     POST /api/referrals/<pk>/update/

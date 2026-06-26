@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import api from '../utils/api'
 
@@ -11,6 +11,15 @@ export default function StudentLogin() {
     password: ''
   })
 
+  useEffect(() => {
+    // Redirect already-authenticated users to their own dashboard
+    if (localStorage.getItem('minap_token')) {
+      let role = null
+      try { role = JSON.parse(localStorage.getItem('minap_user'))?.role } catch { role = null }
+      navigate(role === 'counsellor' ? '/counsellor/dashboard' : '/trainee/dashboard', { replace: true })
+    }
+  }, [navigate])
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
@@ -21,7 +30,7 @@ export default function StudentLogin() {
     setLoading(true)
 
     try {
-      const response = await api.post('/api/auth/login/', formData)
+      const response = await api.post('/auth/login/', formData)
       
       // Verify user is a student
       if (response.data.user.role !== 'student') {
@@ -35,7 +44,7 @@ export default function StudentLogin() {
       localStorage.setItem('minap_user', JSON.stringify(response.data.user))
       
       // Redirect to student dashboard
-      navigate('/student/dashboard')
+      navigate('/trainee/dashboard')
     } catch (err) {
       console.error('Login error:', err)
       if (err.response?.status === 400) {
@@ -62,7 +71,7 @@ export default function StudentLogin() {
           <div style={{
             width: '64px',
             height: '64px',
-            background: 'var(--primary)',
+            background: 'var(--brand)',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
@@ -134,16 +143,12 @@ export default function StudentLogin() {
           <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>
             Don't have an account?
           </p>
-          <Link to="/student/register" className="btn btn-accent" style={{ marginBottom: '0.75rem' }}>
+          <Link to="/trainee/register" className="btn btn-accent" style={{ marginBottom: '0.75rem' }}>
             ✨ Create Student Account
           </Link>
           
           <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '1.5rem' }}>
-            <Link to="/screening" style={{ color: 'var(--primary)' }}>
-              Take anonymous screening
-            </Link>
-            {' • '}
-            <Link to="/counsellor/login" style={{ color: 'var(--primary)' }}>
+            <Link to="/counsellor/login" style={{ color: 'var(--brand)' }}>
               Counsellor Login
             </Link>
           </div>

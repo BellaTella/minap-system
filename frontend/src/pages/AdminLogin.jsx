@@ -21,7 +21,7 @@ export default function AdminLogin() {
     setLoading(true)
 
     try {
-      const response = await api.post('/api/auth/login/', formData)
+      const response = await api.post('/auth/login/', formData)
       
       // Verify user is an admin or superuser
       if (response.data.user.role !== 'admin' && !response.data.user.is_superuser) {
@@ -146,7 +146,7 @@ export default function AdminLogin() {
           fontSize: '0.9rem',
           color: 'var(--text-muted)'
         }}>
-          <Link to="/" style={{ color: 'var(--primary)' }}>
+          <Link to="/" style={{ color: 'var(--brand)' }}>
             ← Back to Home
           </Link>
         </div>

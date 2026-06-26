@@ -38,7 +38,7 @@ export default function StudentRegister() {
     setLoading(true)
 
     try {
-      const response = await api.post('/api/auth/register/student/', formData)
+      const response = await api.post('/auth/register/student/', formData)
       
       // Store token and user data
       localStorage.setItem('minap_token', response.data.token)
@@ -72,7 +72,7 @@ export default function StudentRegister() {
         <div className="card" style={{ padding: '2.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Student Registration</h1>
-            <p style={{ color: 'var(--text-muted)' }}>Create your MiNaP account to track your wellness journey</p>
+            <p style={{ color: 'var(--text-muted)' }}>Create your Imara account to track your wellness journey</p>
           </div>
 
           {error && (
@@ -359,7 +359,7 @@ export default function StudentRegister() {
           </form>
 
           <div style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)' }}>
-            Already have an account? <Link to="/student/login" style={{ color: 'var(--primary)', fontWeight: 500 }}>Sign In</Link>
+            Already have an account? <Link to="/student/login" style={{ color: 'var(--brand)', fontWeight: 500 }}>Sign In</Link>
           </div>
         </div>
       </div>

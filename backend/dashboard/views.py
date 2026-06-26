@@ -20,12 +20,13 @@ from rest_framework.pagination import PageNumberPagination
 from screening.models import ScreeningResult
 from referrals.models import Referral
 from screening.serializers import ScreeningResultSerializer
+from users.permissions import IsCounsellorOrAdmin
 
 logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def dashboard_summary(request):
     """
     GET /api/dashboard/summary/
@@ -89,7 +90,7 @@ def dashboard_summary(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def case_list(request):
     """
     GET /api/dashboard/cases/
@@ -151,7 +152,7 @@ def case_list(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def high_priority_alerts(request):
     """
     GET /api/dashboard/alerts/

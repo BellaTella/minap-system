@@ -1,5 +1,5 @@
 """
-MiNaP SEMMA ML Training Pipeline
+Imara SEMMA ML Training Pipeline
 Implements the full SEMMA (Sample, Explore, Modify, Model, Assess) pipeline
 for training the PTSD severity classifier.
 
@@ -285,7 +285,7 @@ def evaluate_models(models: dict, X_test, y_test, label_encoder) -> str:
     )
 
     logger.info("=== PHASE 5: ASSESS ===")
-    report_lines = ["MiNaP PTSD Classifier — Evaluation Report", "=" * 50]
+    report_lines = ["Imara PTSD Classifier — Evaluation Report", "=" * 50]
     classes = label_encoder.classes_
 
     best_model_name = None
@@ -347,7 +347,7 @@ def save_artifacts(models: dict, best_model_name: str, scaler, label_encoder, re
 
 def run_pipeline(csv_path: str = None):
     """Execute the full SEMMA pipeline."""
-    logger.info("Starting MiNaP SEMMA Training Pipeline")
+    logger.info("Starting Imara SEMMA Training Pipeline")
 
     # Phase 1: Sample
     df = load_or_generate_data(csv_path)

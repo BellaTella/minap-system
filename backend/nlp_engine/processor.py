@@ -1,5 +1,5 @@
 """
-MiNaP NLP Engine
+Imara NLP Engine
 Processes optional free-text narrative inputs from trainees.
 
 Three functions:

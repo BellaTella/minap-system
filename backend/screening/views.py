@@ -2,7 +2,7 @@
 Screening views — the core assessment submission pipeline.
 
 POST /api/screening/submit/
-  - Accepts PCL-5 + DTS responses from an anonymous trainee
+  - Accepts PCL-5 + DTS responses from an authenticated trainee
   - Computes cluster scores
   - Runs NLP on optional narrative
   - Calls ML classifier for severity prediction
@@ -22,12 +22,13 @@ import logging
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 from .models import TraineeSession, ScreeningResult
 from .serializers import ScreeningSubmitSerializer, ScreeningResultSerializer
+from users.permissions import IsCounsellorOrAdmin
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ FEEDBACK_CONTENT = {
             ),
             'resources': [
                 'Stress management techniques: deep breathing, mindfulness',
-                'MiNaP Wellness Library — self-care resources',
+                'Imara Wellness Library — self-care resources',
                 'Peer support groups on campus',
             ],
             'action': 'No immediate referral needed. Monitor your wellbeing regularly.',
@@ -62,7 +63,7 @@ FEEDBACK_CONTENT = {
             ),
             'resources': [
                 'Mbinu za kudhibiti msongo: kupumua kwa kina, utulivu wa akili',
-                'Maktaba ya Ustawi wa MiNaP — rasilimali za kujitunza',
+                'Maktaba ya Ustawi wa Imara — rasilimali za kujitunza',
                 'Vikundi vya msaada wa wenzako shuleni',
             ],
             'action': 'Hakuna rufaa inayohitajika sasa hivi. Fuatilia ustawi wako mara kwa mara.',
@@ -79,7 +80,7 @@ FEEDBACK_CONTENT = {
             'resources': [
                 'Grounding techniques for managing intrusive thoughts',
                 'Sleep hygiene and relaxation exercises',
-                'MiNaP psychoeducation library — understanding PTSD',
+                'Imara psychoeducation library — understanding PTSD',
                 'Optional: Book a voluntary counselling session',
             ],
             'action': 'Self-help resources provided. Voluntary counselling recommended.',
@@ -95,7 +96,7 @@ FEEDBACK_CONTENT = {
             'resources': [
                 'Mbinu za kutuliza mawazo yanayosumbua',
                 'Mazoea ya kulala vizuri na kupumzika',
-                'Maktaba ya elimu ya afya ya akili ya MiNaP',
+                'Maktaba ya elimu ya afya ya akili ya Imara',
                 'Hiari: Panga kikao cha ushauri wa hiari',
             ],
             'action': 'Rasilimali za kujisaidia zimetolewa. Ushauri wa hiari unapendekezwa.',
@@ -107,30 +108,30 @@ FEEDBACK_CONTENT = {
             'message': (
                 'Your responses indicate a moderate level of PTSD symptoms that are likely '
                 'impacting your studies and daily functioning. We strongly recommend connecting '
-                'with a MiNaP counsellor. A referral has been sent to the Guidance and '
+                'with a counsellor. A referral has been sent to the Guidance and '
                 'Counselling office on your behalf.'
             ),
             'resources': [
                 'Cognitive Behavioural Therapy (CBT) self-help workbook',
-                'Crisis support contacts: MiNaP Counselling Office',
+                'Crisis support contacts: Guidance & Counselling Office',
                 'Breathing and grounding exercises for immediate relief',
             ],
-            'action': 'Referral sent to MiNaP Guidance & Counselling office.',
+            'action': 'Referral sent to the Guidance & Counselling office.',
         },
         'sw': {
             'headline': 'Matokeo yako yanaonyesha dalili za wastani za PTSD.',
             'message': (
                 'Majibu yako yanaonyesha kiwango cha wastani cha dalili za PTSD ambazo '
                 'zinaweza kuathiri masomo yako na utendaji wa kila siku. Tunakushauri sana '
-                'kuwasiliana na mshauri wa MiNaP. Rufaa imetumwa kwa ofisi ya Mwongozo na '
+                'kuwasiliana na mshauri. Rufaa imetumwa kwa ofisi ya Mwongozo na '
                 'Ushauri kwa niaba yako.'
             ),
             'resources': [
                 'Kitabu cha kujisaidia cha Tiba ya Utambuzi na Tabia (CBT)',
-                'Mawasiliano ya msaada wa dharura: Ofisi ya Ushauri wa MiNaP',
+                'Mawasiliano ya msaada wa dharura: Ofisi ya Mwongozo na Ushauri',
                 'Mazoezi ya kupumua na kutuliza kwa msaada wa haraka',
             ],
-            'action': 'Rufaa imetumwa kwa ofisi ya Mwongozo na Ushauri wa MiNaP.',
+            'action': 'Rufaa imetumwa kwa ofisi ya Mwongozo na Ushauri.',
         },
     },
     'severe': {
@@ -138,12 +139,12 @@ FEEDBACK_CONTENT = {
             'headline': 'Your results suggest severe PTSD symptoms.',
             'message': (
                 'You are experiencing severe PTSD symptoms that require professional support. '
-                'A referral has been automatically sent to the MiNaP counselling team. '
+                'A referral has been automatically sent to the counselling team. '
                 'Please reach out to the Guidance and Counselling office as soon as possible. '
                 'You do not have to face this alone.'
             ),
             'resources': [
-                'MiNaP Guidance & Counselling Office — visit or call today',
+                'Guidance & Counselling Office — visit or call today',
                 'Befrienders Kenya: 0800 723 253 (free, 24/7)',
                 'Emergency contacts: Campus security, nearest health facility',
             ],
@@ -153,12 +154,12 @@ FEEDBACK_CONTENT = {
             'headline': 'Matokeo yako yanaonyesha dalili kali za PTSD.',
             'message': (
                 'Unakabiliwa na dalili kali za PTSD ambazo zinahitaji msaada wa kitaalamu. '
-                'Rufaa imetumwa kiotomatiki kwa timu ya ushauri wa MiNaP. '
+                'Rufaa imetumwa kiotomatiki kwa timu ya ushauri. '
                 'Tafadhali wasiliana na ofisi ya Mwongozo na Ushauri haraka iwezekanavyo. '
                 'Huhitaji kukabiliana na hili peke yako.'
             ),
             'resources': [
-                'Ofisi ya Mwongozo na Ushauri wa MiNaP — tembelea au piga simu leo',
+                'Ofisi ya Mwongozo na Ushauri — tembelea au piga simu leo',
                 'Befrienders Kenya: 0800 723 253 (bure, masaa 24/7)',
                 'Mawasiliano ya dharura: Usalama wa chuo, kituo cha afya karibu nawe',
             ],
@@ -171,11 +172,11 @@ FEEDBACK_CONTENT = {
             'message': (
                 'Your responses indicate critical PTSD symptoms. This is a serious concern and '
                 'you deserve immediate professional support. A high-priority alert has been sent '
-                'to the MiNaP counselling team. Please go to the Guidance and Counselling office '
+                'to the counselling team. Please go to the Guidance and Counselling office '
                 'now, or call the emergency contacts below.'
             ),
             'resources': [
-                'MiNaP Guidance & Counselling Office — go NOW',
+                'Guidance & Counselling Office — go NOW',
                 'Befrienders Kenya: 0800 723 253 (free, 24/7)',
                 'Mathare Hospital Crisis Line: +254 20 2723 031',
                 'Emergency services: 999 / 112',
@@ -187,11 +188,11 @@ FEEDBACK_CONTENT = {
             'message': (
                 'Majibu yako yanaonyesha dalili za PTSD za hali ya juu. Hii ni wasiwasi mkubwa '
                 'na unastahili msaada wa kitaalamu wa haraka. Arifa ya kipaumbele cha juu '
-                'imetumwa kwa timu ya ushauri wa MiNaP. Tafadhali nenda ofisini kwa Mwongozo '
+                'imetumwa kwa timu ya ushauri. Tafadhali nenda ofisini kwa Mwongozo '
                 'na Ushauri SASA HIVI, au piga simu mawasiliano ya dharura hapa chini.'
             ),
             'resources': [
-                'Ofisi ya Mwongozo na Ushauri wa MiNaP — nenda SASA',
+                'Ofisi ya Mwongozo na Ushauri — nenda SASA',
                 'Befrienders Kenya: 0800 723 253 (bure, masaa 24/7)',
                 'Simu ya dharura ya Hospitali ya Mathare: +254 20 2723 031',
                 'Huduma za dharura: 999 / 112',
@@ -205,12 +206,19 @@ FEEDBACK_CONTENT = {
 # ─── Views ────────────────────────────────────────────────────────────────────
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def submit_screening(request):
     """
     POST /api/screening/submit/
-    Full assessment submission pipeline — no authentication required.
+    Full assessment submission pipeline — authenticated trainees only.
     """
+    # Only trainees (students) may submit a screening
+    if not (hasattr(request.user, 'role') and request.user.role == 'student'):
+        return Response(
+            {'detail': 'Only trainees can submit a screening.'},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     serializer = ScreeningSubmitSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -221,14 +229,10 @@ def submit_screening(request):
         lang = 'en'
 
     try:
-        # ── Step 1: Create anonymous trainee session ──────────────────────────
+        # ── Step 1: Create trainee session linked to the logged-in student ────
         token = str(uuid.uuid4())
-        
-        # Link to student account if authenticated
-        student_user = None
-        if request.user.is_authenticated and hasattr(request.user, 'role') and request.user.role == 'student':
-            student_user = request.user
-        
+        student_user = request.user
+
         session = TraineeSession.objects.create(
             anonymous_token=token,
             student=student_user,
@@ -304,7 +308,7 @@ def submit_screening(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def list_results(request):
     """
     GET /api/screening/results/
@@ -334,7 +338,7 @@ def list_results(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsCounsellorOrAdmin])
 def result_detail(request, pk):
     """
     GET /api/screening/results/<pk>/

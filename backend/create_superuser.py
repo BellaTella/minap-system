@@ -8,7 +8,7 @@ Usage:
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'minap.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'imara.settings')
 django.setup()
 
 from users.models import User

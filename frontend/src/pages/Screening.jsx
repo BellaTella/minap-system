@@ -122,7 +122,7 @@ export default function Screening() {
         marginBottom: '1rem'
       }}>
         <div style={{ fontSize: '0.95rem', fontWeight: 500, marginBottom: '0.9rem' }}>
-          <span style={{ color: 'var(--primary)', fontWeight: 700, marginRight: '0.4rem' }}>{index}.</span>
+          <span style={{ color: 'var(--brand)', fontWeight: 700, marginRight: '0.4rem' }}>{index}.</span>
           {PCL5_QUESTIONS[index - 1]}
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -148,9 +148,9 @@ export default function Screening() {
                 fontSize: '0.8rem',
                 fontWeight: 500,
                 transition: 'all 0.15s',
-                background: formData[fieldName] === opt.val ? 'var(--primary)' : 'var(--bg)',
+                background: formData[fieldName] === opt.val ? 'var(--brand)' : 'var(--bg)',
                 color: formData[fieldName] === opt.val ? '#fff' : 'var(--text-muted)',
-                borderColor: formData[fieldName] === opt.val ? 'var(--primary)' : 'var(--border)',
+                borderColor: formData[fieldName] === opt.val ? 'var(--brand)' : 'var(--border)',
                 lineHeight: 1.3
               }}>
                 {opt.val}<br /><small>{opt.label}</small>
@@ -181,7 +181,7 @@ export default function Screening() {
       {step === 1 && (
         <div className="card">
           <div className="card-header">
-            <h2>Welcome to the MiNaP PTSD Screening</h2>
+            <h2>Welcome to the Imara PTSD Screening</h2>
             <p>Before we begin, please read the information below and provide your consent.</p>
           </div>
 
@@ -239,7 +239,7 @@ export default function Screening() {
                 type="checkbox"
                 checked={formData.consent}
                 onChange={(e) => handleChange('consent', e.target.checked)}
-                style={{ marginTop: '0.2rem', width: '18px', height: '18px', accentColor: 'var(--primary)' }}
+                style={{ marginTop: '0.2rem', width: '18px', height: '18px', accentColor: 'var(--brand)' }}
               />
               <span style={{ fontSize: '0.9rem' }}>
                 I understand this is an anonymous screening tool. I consent to my anonymised
@@ -301,11 +301,11 @@ export default function Screening() {
               max="136"
               value={formData.dts_score}
               onChange={(e) => handleChange('dts_score', parseInt(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--primary)' }}
+              style={{ width: '100%', accentColor: 'var(--brand)' }}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
               <span>0 — No distress</span>
-              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{formData.dts_score}</span>
+              <span style={{ fontWeight: 700, color: 'var(--brand)' }}>{formData.dts_score}</span>
               <span>136 — Extreme distress</span>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function Screening() {
                 <div className="alert alert-danger mt-2">
                   <span>🚨</span>
                   <div>
-                    <strong>Immediate Support Available:</strong> Please contact the MiNaP Guidance & Counselling office
+                    <strong>Immediate Support Available:</strong> Please contact the Guidance & Counselling office
                     or call <strong>Befrienders Kenya: 0800 723 253</strong> (free, 24/7).
                   </div>
                 </div>
@@ -380,7 +380,7 @@ export default function Screening() {
               {result.referral_triggered && (
                 <div className="alert alert-warning mt-2">
                   <span>📋</span>
-                  <div>A referral has been sent to the MiNaP Guidance & Counselling office.</div>
+                  <div>A referral has been sent to the Guidance & Counselling office.</div>
                 </div>
               )}
 

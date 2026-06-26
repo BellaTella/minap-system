@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 from .models import User, WellnessCheckIn, CounsellingAppointment
+from .permissions import IsCounsellorOrAdmin
 from .serializers import (
     LoginSerializer, UserSerializer, StudentRegistrationSerializer,
     ChangePasswordSerializer, WellnessCheckInSerializer,
@@ -62,7 +63,7 @@ def student_register(request):
     return Response({
         'token': token.key,
         'user': UserSerializer(user).data,
-        'message': 'Registration successful! Welcome to MiNaP.'
+        'message': 'Registration successful! Welcome to Imara.'
     }, status=status.HTTP_201_CREATED)
 
 
@@ -337,6 +338,60 @@ def appointment_detail(request, pk):
             return Response({'detail': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
         appointment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ─── Counsellor: Appointment Management ───────────────────────────────────────
+
+@api_view(['GET'])
+@permission_classes([IsCounsellorOrAdmin])
+def counsellor_appointment_list(request):
+    """
+    GET /api/counsellor/appointments/
+    Returns paginated appointments for counselling staff.
+    Supports filtering by status (e.g. ?status=requested).
+    """
+    queryset = CounsellingAppointment.objects.select_related('student', 'counsellor').all()
+
+    status_filter = request.query_params.get('status')
+    if status_filter:
+        queryset = queryset.filter(status=status_filter)
+
+    # Order: soonest upcoming requests first, then by recency
+    queryset = queryset.order_by('status', 'preferred_date', 'preferred_time')
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    page = paginator.paginate_queryset(queryset, request)
+    serializer = CounsellingAppointmentSerializer(page, many=True)
+    return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsCounsellorOrAdmin])
+def counsellor_appointment_update(request, pk):
+    """
+    PATCH /api/counsellor/appointments/<pk>/
+    Allows counsellors to confirm/complete/cancel an appointment, add notes,
+    and assign themselves (or another counsellor) to it.
+    """
+    try:
+        appointment = CounsellingAppointment.objects.get(pk=pk)
+    except CounsellingAppointment.DoesNotExist:
+        return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    allowed = ('status', 'counsellor_notes', 'counsellor', 'preferred_date', 'preferred_time')
+    data = {k: v for k, v in request.data.items() if k in allowed}
+
+    serializer = CounsellingAppointmentSerializer(appointment, data=data, partial=True)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer.save()
+    logger.info(
+        "Appointment #%s updated by %s — status: %s",
+        pk, request.user.username, appointment.status
+    )
+    return Response(serializer.data)
 
 
 # ─── Admin: User Management (CRUD) ────────────────────────────────────────────

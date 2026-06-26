@@ -1,5 +1,5 @@
 """
-MiNaP ML Engine — PTSD Severity Classifier
+Imara ML Engine — PTSD Severity Classifier
 Implements the SEMMA-trained Random Forest model for real-time severity prediction.
 
 Severity bands (PCL-5 total score):

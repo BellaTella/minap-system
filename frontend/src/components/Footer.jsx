@@ -3,12 +3,12 @@ export default function Footer() {
     <footer style={{
       textAlign: 'center',
       padding: '2rem',
-      color: 'var(--text-muted)',
+      color: 'rgba(255, 255, 255, 0.6)',
       fontSize: '0.82rem',
-      borderTop: '1px solid var(--border)',
-      marginTop: '3rem'
+      background: '#06130e',
+      borderTop: '1px solid rgba(255, 255, 255, 0.08)'
     }}>
-      <p>MiNaP PTSD Indicator &amp; Mitigation System — The Michuki National Polytechnic</p>
+      <p>Imara — PTSD Indicator &amp; Mitigation System</p>
       <p style={{ marginTop: '0.5rem' }}>
         Confidential &bull; Anonymous &bull; Secure &bull; &copy; 2026
       </p>

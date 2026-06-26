@@ -10,9 +10,11 @@ export default function CounsellorLogin() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Redirect if already logged in
+    // Redirect already-authenticated users to their own dashboard
     if (localStorage.getItem('minap_token')) {
-      navigate('/counsellor/dashboard')
+      let role = null
+      try { role = JSON.parse(localStorage.getItem('minap_user'))?.role } catch { role = null }
+      navigate(role === 'student' ? '/trainee/dashboard' : '/counsellor/dashboard', { replace: true })
     }
   }, [navigate])
 
@@ -29,6 +31,15 @@ export default function CounsellorLogin() {
 
     try {
       const response = await api.post('/auth/login/', { username, password })
+
+      // Verify user is a counsellor (or admin/staff)
+      const { role, is_staff } = response.data.user
+      if (role !== 'counsellor' && role !== 'admin' && !is_staff) {
+        setError('This portal is for counselling staff only. Please use the student login.')
+        setLoading(false)
+        return
+      }
+
       localStorage.setItem('minap_token', response.data.token)
       localStorage.setItem('minap_user', JSON.stringify(response.data.user))
       navigate('/counsellor/dashboard')
@@ -45,7 +56,7 @@ export default function CounsellorLogin() {
         <div style={{
           width: '64px',
           height: '64px',
-          background: 'var(--primary)',
+          background: 'var(--brand)',
           borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
@@ -54,7 +65,7 @@ export default function CounsellorLogin() {
           fontSize: '1.8rem'
         }}>🏥</div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 700 }}>Counsellor Portal</h1>
-        <p className="text-muted mt-1">Sign in to access the MiNaP dashboard</p>
+        <p className="text-muted mt-1">Sign in to access the Imara dashboard</p>
       </div>
 
       <div className="card mt-3">
@@ -101,7 +112,7 @@ export default function CounsellorLogin() {
       </div>
 
       <p className="text-center text-muted mt-3" style={{ fontSize: '0.85rem' }}>
-        This portal is for authorised MiNaP counselling staff only.<br />
+        This portal is for authorised counselling staff only.<br />
         Contact your administrator if you need access.
       </p>
     </div>
